@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizarra de aire / creada por Nasslo Muñoz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #0b0f19;
+            color: white;
+            min-height: 100vh;
+        }
+
+        #gameBox {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 900 / 650;
+            background: #000;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 2px solid #3b72cf;
+            box-shadow: 0 0 30px rgba(59, 114, 207, 0.2);
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #videoCanvas { z-index: 1; }
+        #drawCanvas { z-index: 5; pointer-events: none; }
+
+        #nameDisplay {
+            position: absolute;
+            top: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.9);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(59, 114, 207, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 114, 207, 0.8); }
+
+        @media print {
+            body * { visibility: hidden; }
+            #gameBox, #gameBox * { visibility: visible; }
+            #gameBox { position: absolute; left: 0; top: 0; background: white !important; border: none !important; box-shadow: none !important; border-radius: 0; width: 100%; }
+            #videoCanvas { display: none !important; }
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500/30 overflow-x-hidden flex flex-col items-center">
+
+    <div class="relative z-10 w-full flex flex-col items-center pt-8 pb-12 px-4 sm:px-6 max-w-[1500px] mx-auto min-h-screen">
+        
+        <div class="flex flex-col items-center mb-8">
+            <div class="flex items-center justify-center gap-3">
+                <svg width="45" height="45" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#43b2f0]">
+                    <circle cx="40" cy="50" r="30" fill="currentColor"/>
+                    <circle cx="70" cy="40" r="15" fill="currentColor"/>
+                    <circle cx="80" cy="60" r="10" fill="#0b0f19"/>
+                </svg>
+                <h1 class="text-3xl md:text-5xl font-black text-[#43b2f0] tracking-wider uppercase m-0 leading-none">
+                    Pizarra de Aire
+                </h1>
+            </div>
+            <p class="text-[10px] md:text-xs font-bold text-[#627a9e] uppercase tracking-[0.15em] mt-2 text-center">
+                Creada por Nasslo Muñoz - Ingeniero informático
+            </p>
+        </div>
+
+        <div class="flex flex-col lg:flex-row w-full gap-6 justify-center items-center lg:items-stretch">
+            
+            <div class="w-full lg:w-64 bg-[#181c2e] border border-[#2a304a] rounded-2xl p-5 shadow-lg flex flex-col gap-3 shrink-0 h-fit">
+                <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-2 text-center">Paleta de Colores</h3>
+                
+                <div class="grid grid-cols-2 lg:grid-cols-1 gap-2">
+                    <button onclick="setColor('lime')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-green-500 mr-3 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span> Verde
+                    </button>
+                    <button onclick="setColor('red')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-red-600 mr-3 shadow-[0_0_8px_rgba(220,38,38,0.5)]"></span> Rojo
+                    </button>
+                    <button onclick="setColor('blue')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-blue-600 mr-3 shadow-[0_0_8px_rgba(37,99,235,0.5)]"></span> Azul
+                    </button>
+                    <button onclick="setColor('yellow')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-yellow-400 mr-3 shadow-[0_0_8px_rgba(250,204,21,0.5)]"></span> Amarillo
+                    </button>
+                    <button onclick="setColor('purple')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-purple-600 mr-3 shadow-[0_0_8px_rgba(147,51,234,0.5)]"></span> Morado
+                    </button>
+                    <button onclick="setColor('orange')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-orange-500 mr-3 shadow-[0_0_8px_rgba(249,115,22,0.5)]"></span> Naranjo
+                    </button>
+                    <button onclick="setColor('pink')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-pink-400 mr-3 shadow-[0_0_8px_rgba(244,114,182,0.5)]"></span> Rosado
+                    </button>
+                    <button onclick="setColor('brown')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-[#8B4513] mr-3 shadow-[0_0_8px_rgba(139,69,19,0.5)]"></span> Café
+                    </button>
+                    <button onclick="setColor('black')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-gray-900 border border-gray-600 mr-3"></span> Negro
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 w-full flex justify-center items-center order-first lg:order-none mb-4 lg:mb-0">
+                <div id="gameBox">
+                    <div id="nameDisplay"></div>
+                    <canvas id="videoCanvas"></canvas>
+                    <canvas id="drawCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-64 bg-[#181c2e] border border-[#2a304a] rounded-2xl p-5 shadow-lg flex flex-col gap-6 shrink-0 h-fit">
+                
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-1 text-center">Grosor de Pincel</h3>
+                    <div class="grid grid-cols-3 lg:grid-cols-1 gap-2">
+                        <button onclick="setBrushSize(4)" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-xs font-bold flex items-center justify-center lg:justify-start">
+                            <span>✏️</span> <span class="hidden lg:inline ml-3">Delgado</span>
+                        </button>
+                        <button onclick="setBrushSize(8)" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-xs font-bold flex items-center justify-center lg:justify-start">
+                            <span>🖌️</span> <span class="hidden lg:inline ml-3">Medio</span>
+                        </button>
+                        <button onclick="setBrushSize(16)" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-xs font-bold flex items-center justify-center lg:justify-start">
+                            <span>🖍️</span> <span class="hidden lg:inline ml-3">Grueso</span>
+                        </button>
+                    </div>
+                </div>
+
+                <hr class="border-[#2a304a]">
+
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-1 text-center">Acciones Rápidas</h3>
+                    <button onclick="clearCanvas()" class="w-full bg-[#bd323c] hover:bg-[#a12831] border border-[#d14b54] text-white rounded-xl py-3 px-4 transition-all duration-200 shadow-md text-sm font-black flex items-center justify-center tracking-wider">
+                        <span class="mr-2 text-lg">🧹</span> LIMPIAR
+                    </button>
+                    <button onclick="printDrawing()" class="w-full bg-[#2a62ba] hover:bg-[#204e96] border border-[#3f79d4] text-white rounded-xl py-3 px-4 transition-all duration-200 shadow-md text-sm font-black flex items-center justify-center tracking-wider">
+                        <span class="mr-2 text-lg">🖨️</span> IMPRIMIR
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const video = document.createElement("video");
+        video.autoplay = true;
+        const vCanvas = document.getElementById("videoCanvas");
+        const dCanvas = document.getElementById("drawCanvas");
+        const nameDisplay = document.getElementById("nameDisplay");
+        const vctx = vCanvas.getContext("2d");
+        const dctx = dCanvas.getContext("2d");
+
+        vCanvas.width = 900; vCanvas.height = 650;
+        dCanvas.width = 900; dCanvas.height = 650;
+
+        let lastBlue = null, lastRed = null, currentColor = "lime", brushSize = 8;
+        let lastExecutionTime = 0;
+
+        navigator.mediaDevices.getUserMedia({video: true, audio: false})
+            .then(s => { video.srcObject = s; video.play(); })
+            .catch(e => console.error("Error cámara:", e));
+
+        function setColor(color) { currentColor = color; }
+        function setBrushSize(size) { brushSize = size; }
+        function clearCanvas() { dctx.clearRect(0, 0, 900, 650); }
+
+        function printDrawing(name = "") {
+            if(name) nameDisplay.innerText = "Dibujo de: " + name;
+            window.print();
+            setTimeout(() => { nameDisplay.innerText = ""; }, 2000);
+        }
+
+        function detectColor(target) {
+            const frame = vctx.getImageData(0, 0, 900, 650);
+            let sX = 0, sY = 0, count = 0;
+            for(let i = 0; i < frame.data.length; i += 32) {
+                const r = frame.data[i], g = frame.data[i+1], b = frame.data[i+2];
+                if(target === "blue" && b > 150 && r < 100) { count++; sX += (i/4)%900; sY += Math.floor((i/4)/900); }
+                if(target === "red" && r > 150 && g < 80 && b < 80) { count++; sX += (i/4)%900; sY += Math.floor((i/4)/900); }
+            }
+            return count > 20 ? { x: sX / count, y: sY / count } : null;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const rec = new SpeechRecognition();
+            rec.lang = "es-ES";
+            rec.continuous = true;
+            rec.interimResults = false;
+            
+            rec.onresult = (e) => {
+                const now = Date.now();
+                const result = e.results[e.results.length - 1];
+                if (!result.isFinal || (now - lastExecutionTime < 5000)) return;
+
+                const t = result[0].transcript.toLowerCase();
+                
+                if (t.includes("imprimir")) {
+                    lastExecutionTime = now;
+                    const nombre = t.split("imprimir")[1] || "";
+                    printDrawing(nombre.trim());
+                }
+                else if (t.includes("limpiar")) clearCanvas();
+                else if (t.includes("rojo")) setColor("red");
+                else if (t.includes("verde")) setColor("lime");
+                else if (t.includes("azul")) setColor("blue");
+                else if (t.includes("amarillo")) setColor("yellow");
+                else if (t.includes("morado")) setColor("purple");
+                else if (t.includes("naranjo")) setColor("orange");
+                else if (t.includes("rosado")) setColor("pink");
+                else if (t.includes("café") || t.includes("cafe")) setColor("brown");
+                else if (t.includes("negro")) setColor("black");
+                else if (t.includes("delgado")) setBrushSize(4);
+                else if (t.includes("medio")) setBrushSize(8);
+                else if (t.includes("grueso")) setBrushSize(16);
+            };
+            rec.start();
+            rec.onend = () => rec.start();
+        }
+
+        function loop() {
+            vctx.save(); vctx.scale(-1, 1); vctx.drawImage(video, -900, 0, 900, 650); vctx.restore();
+            const blue = detectColor("blue");
+            const red = detectColor("red");
+
+            if(blue) {
+                if(lastBlue) { dctx.globalCompositeOperation = "source-over"; dctx.beginPath(); dctx.moveTo(lastBlue.x, lastBlue.y); dctx.lineTo(blue.x, blue.y); dctx.strokeStyle = currentColor; dctx.lineWidth = brushSize; dctx.lineCap = "round"; dctx.stroke(); }
+                lastBlue = blue;
+            } else lastBlue = null;
+
+            if(red) {
+                if(lastRed) { dctx.globalCompositeOperation = "destination-out"; dctx.beginPath(); dctx.moveTo(lastRed.x, lastRed.y); dctx.lineTo(red.x, red.y); dctx.lineWidth = brushSize * 5; dctx.lineCap = "round"; dctx.stroke(); }
+                lastRed = red;
+            } else lastRed = null;
+            requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
+</body>
+</html>
