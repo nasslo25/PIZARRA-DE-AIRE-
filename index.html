@@ -270,7 +270,7 @@
                     <h1 class="text-3xl md:text-4xl font-black text-[#43b2f0] tracking-wider uppercase m-0 leading-tight">
                         Pizarra de Aire
                     </h1>
-                    <p class="text-[10px] md:text-xs font-bold text-[#627a9e] uppercase tracking-[0.15em] m-0">
+                    <p class="text-[10px] md:text-xs font-bold text-[#627a9e] uppercase tracking-[0.15em] m-0" id="mic-status-text">
                         Dibuja con colores y tu voz
                     </p>
                 </div>
@@ -278,8 +278,8 @@
 
             <div class="flex flex-col items-center md:items-end gap-1 print:hidden">
                 <span class="text-[0.65rem] text-slate-400 uppercase tracking-widest font-sans font-semibold">Creada por</span>
-                <!-- Logo Oficial -->
-                <img src="logofirma.png" alt="Despierta Mentes" class="h-10 md:h-12 w-auto object-contain rounded drop-shadow-md" onerror="this.src='https://placehold.co/150x40/1e293b/bae6fd?text=Logo+Firma'">
+                <!-- Logo Oficial Agrandado -->
+                <img src="logofirma.jpg" alt="Despierta Mentes" class="h-14 md:h-16 w-auto object-contain rounded drop-shadow-md" onerror="this.src='https://placehold.co/150x40/1e293b/bae6fd?text=Logo+Firma'">
             </div>
         </header>
 
@@ -651,94 +651,131 @@
         }
         loop();
 
+        // Inicialización Robusta del Micrófono
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let isRecognizing = false;
-        let micBlocked = false; // NUEVA VARIABLE PARA EVITAR BUCLES MOLESTOS
+        let micBlocked = false; 
+        let rec = null;
 
-        if (SpeechRecognition) {
-            const rec = new SpeechRecognition();
+        function initMicrophone() {
+            if (!SpeechRecognition) {
+                document.getElementById('mic-status-text').innerText = "Voz no compatible en este navegador";
+                document.getElementById('mic-status-text').style.color = "#ef4444";
+                return;
+            }
+
+            if (rec) return; // Ya está inicializado
+
+            rec = new SpeechRecognition();
             rec.lang = "es-CL";
             rec.continuous = true;
             rec.interimResults = false;
             
-            rec.onstart = () => { isRecognizing = true; };
+            rec.onstart = () => { 
+                isRecognizing = true; 
+                document.getElementById('mic-status-text').innerText = "🎙️ Escuchando comandos...";
+                document.getElementById('mic-status-text').style.color = "#4ade80"; // Verde
+            };
 
             rec.onend = () => {
                 isRecognizing = false;
-                // Si el micrófono no ha sido bloqueado explícitamente, intenta reiniciar
                 if (!micBlocked) {
+                    // Intento de reconexión suave
                     setTimeout(() => {
                         if (!isRecognizing && !micBlocked) {
                             try { rec.start(); } catch(e) {}
                         }
-                    }, 1500);
+                    }, 1000);
+                } else {
+                    document.getElementById('mic-status-text').innerText = "🎙️ Micrófono pausado/bloqueado";
+                    document.getElementById('mic-status-text').style.color = "#facc15"; // Amarillo
                 }
             };
 
             rec.onerror = (e) => {
-                // Si el error es por permisos, marcamos como bloqueado para detener el bucle
                 if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
                     micBlocked = true; 
-                    console.warn("Micrófono bloqueado o sin permisos. Reconocimiento de voz detenido.");
+                    document.getElementById('mic-status-text').innerText = "❌ Micrófono bloqueado";
+                    document.getElementById('mic-status-text').style.color = "#ef4444";
+                    console.warn("Permisos de micrófono denegados.");
+                } else {
+                    // Ignorar errores de red temporales para que se reinicie solo
+                    isRecognizing = false;
                 }
             };
             
             rec.onresult = (e) => {
                 const now = Date.now();
                 const result = e.results[e.results.length - 1];
-                if (!result.isFinal || (now - lastExecutionTime < 5000)) return;
+                if (!result.isFinal || (now - lastExecutionTime < 2000)) return; // Bajar el cooldown a 2s para mayor fluidez
 
                 const t = result[0].transcript.toLowerCase();
+                console.log("Comando escuchado: ", t); // Útil para depurar en GitHub Pages
                 
                 if (t.includes("imprimir")) {
                     lastExecutionTime = now;
                     const nombre = t.split("imprimir")[1] || "";
                     printDrawing(nombre.trim());
                 }
-                else if (t.includes("limpiar")) clearCanvas();
-                else if (t.includes("estrella")) setTemplate("star");
-                else if (t.includes("corazón") || t.includes("corazon")) setTemplate("heart");
-                else if (t.includes("casa")) setTemplate("house");
-                else if (t.includes("árbol") || t.includes("arbol")) setTemplate("tree");
-                else if (t.includes("sol")) setTemplate("sun");
-                else if (t.includes("flor")) setTemplate("flower");
-                else if (t.includes("pez") || t.includes("pescado")) setTemplate("fish");
-                else if (t.includes("auto") || t.includes("carro") || t.includes("coche")) setTemplate("car");
+                else if (t.includes("limpiar") || t.includes("borrar todo")) { lastExecutionTime = now; clearCanvas(); }
+                else if (t.includes("estrella")) { lastExecutionTime = now; setTemplate("star"); }
+                else if (t.includes("corazón") || t.includes("corazon")) { lastExecutionTime = now; setTemplate("heart"); }
+                else if (t.includes("casa")) { lastExecutionTime = now; setTemplate("house"); }
+                else if (t.includes("árbol") || t.includes("arbol")) { lastExecutionTime = now; setTemplate("tree"); }
+                else if (t.includes("sol")) { lastExecutionTime = now; setTemplate("sun"); }
+                else if (t.includes("flor")) { lastExecutionTime = now; setTemplate("flower"); }
+                else if (t.includes("pez") || t.includes("pescado")) { lastExecutionTime = now; setTemplate("fish"); }
+                else if (t.includes("auto") || t.includes("carro") || t.includes("coche")) { lastExecutionTime = now; setTemplate("car"); }
                 
-                else if (t.includes("vocal a") || t.includes("letra a") || t === "a" || t === "á") setTemplate("A");
-                else if (t.includes("vocal e") || t.includes("letra e") || t === "e" || t === "é") setTemplate("E");
-                else if (t.includes("vocal i") || t.includes("letra i") || t === "i" || t === "í" || t === "y" || t.includes("letra y")) setTemplate("I");
-                else if (t.includes("vocal o") || t.includes("letra o") || t === "o" || t === "ó") setTemplate("O");
-                else if (t.includes("vocal u") || t.includes("letra u") || t === "u" || t === "ú") setTemplate("U");
+                else if (t.includes("vocal a") || t.includes("letra a") || t === "a" || t === "á") { lastExecutionTime = now; setTemplate("A"); }
+                else if (t.includes("vocal e") || t.includes("letra e") || t === "e" || t === "é") { lastExecutionTime = now; setTemplate("E"); }
+                else if (t.includes("vocal i") || t.includes("letra i") || t === "i" || t === "í" || t === "y" || t.includes("letra y")) { lastExecutionTime = now; setTemplate("I"); }
+                else if (t.includes("vocal o") || t.includes("letra o") || t === "o" || t === "ó") { lastExecutionTime = now; setTemplate("O"); }
+                else if (t.includes("vocal u") || t.includes("letra u") || t === "u" || t === "ú") { lastExecutionTime = now; setTemplate("U"); }
 
-                else if (t.includes("diez") || t.includes("10")) setTemplate("10");
-                else if (t.includes("nueve") || t.includes("9")) setTemplate("9");
-                else if (t.includes("ocho") || t.includes("8")) setTemplate("8");
-                else if (t.includes("siete") || t.includes("7")) setTemplate("7");
-                else if (t.includes("seis") || t.includes("6")) setTemplate("6");
-                else if (t.includes("cinco") || t.includes("5")) setTemplate("5");
-                else if (t.includes("cuatro") || t.includes("4")) setTemplate("4");
-                else if (t.includes("tres") || t.includes("3")) setTemplate("3");
-                else if (t.includes("dos") || t.includes("2")) setTemplate("2");
-                else if (t.includes("uno") || t.includes("1")) setTemplate("1");
+                else if (t.includes("diez") || t.includes("10")) { lastExecutionTime = now; setTemplate("10"); }
+                else if (t.includes("nueve") || t.includes("9")) { lastExecutionTime = now; setTemplate("9"); }
+                else if (t.includes("ocho") || t.includes("8")) { lastExecutionTime = now; setTemplate("8"); }
+                else if (t.includes("siete") || t.includes("7")) { lastExecutionTime = now; setTemplate("7"); }
+                else if (t.includes("seis") || t.includes("6")) { lastExecutionTime = now; setTemplate("6"); }
+                else if (t.includes("cinco") || t.includes("5")) { lastExecutionTime = now; setTemplate("5"); }
+                else if (t.includes("cuatro") || t.includes("4")) { lastExecutionTime = now; setTemplate("4"); }
+                else if (t.includes("tres") || t.includes("3")) { lastExecutionTime = now; setTemplate("3"); }
+                else if (t.includes("dos") || t.includes("2")) { lastExecutionTime = now; setTemplate("2"); }
+                else if (t.includes("uno") || t.includes("1")) { lastExecutionTime = now; setTemplate("1"); }
 
-                else if (t.includes("quitar")) setTemplate("none");
-                else if (t.includes("rojo")) setColor("red");
-                else if (t.includes("verde")) setColor("lime");
-                else if (t.includes("azul")) setColor("blue");
-                else if (t.includes("amarillo")) setColor("yellow");
-                else if (t.includes("morado")) setColor("purple");
-                else if (t.includes("naranjo")) setColor("orange");
-                else if (t.includes("rosado")) setColor("pink");
-                else if (t.includes("café") || t.includes("cafe")) setColor("brown");
-                else if (t.includes("negro")) setColor("black");
-                else if (t.includes("delgado")) setBrushSize(4);
-                else if (t.includes("medio")) setBrushSize(8);
-                else if (t.includes("grueso")) setBrushSize(16);
+                else if (t.includes("quitar")) { lastExecutionTime = now; setTemplate("none"); }
+                else if (t.includes("rojo")) { lastExecutionTime = now; setColor("red"); }
+                else if (t.includes("verde")) { lastExecutionTime = now; setColor("lime"); }
+                else if (t.includes("azul")) { lastExecutionTime = now; setColor("blue"); }
+                else if (t.includes("amarillo")) { lastExecutionTime = now; setColor("yellow"); }
+                else if (t.includes("morado")) { lastExecutionTime = now; setColor("purple"); }
+                else if (t.includes("naranjo") || t.includes("naranja")) { lastExecutionTime = now; setColor("orange"); }
+                else if (t.includes("rosado") || t.includes("rosa")) { lastExecutionTime = now; setColor("pink"); }
+                else if (t.includes("café") || t.includes("cafe") || t.includes("marrón")) { lastExecutionTime = now; setColor("brown"); }
+                else if (t.includes("negro")) { lastExecutionTime = now; setColor("black"); }
+                
+                else if (t.includes("delgado") || t.includes("fino")) { lastExecutionTime = now; setBrushSize(4); }
+                else if (t.includes("medio") || t.includes("mediano")) { lastExecutionTime = now; setBrushSize(8); }
+                else if (t.includes("grueso") || t.includes("grande")) { lastExecutionTime = now; setBrushSize(16); }
             };
             
             try { rec.start(); } catch(e) {}
         }
+
+        // Forzar el inicio del micrófono con la primera interacción del usuario en la pantalla
+        // Esto es necesario para GitHub Pages y navegadores modernos
+        document.body.addEventListener('click', () => {
+            if (!isRecognizing && !micBlocked) {
+                initMicrophone();
+            }
+        });
+
+        // Intentar iniciar automáticamente después de 3.5 segundos (tras el splash)
+        setTimeout(() => {
+            initMicrophone();
+        }, 3500);
+
     </script>
 </body>
 </html>
