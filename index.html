@@ -72,9 +72,8 @@
 
     <div class="relative z-10 w-full flex flex-col items-center pt-8 pb-12 px-4 sm:px-6 max-w-[1500px] mx-auto min-h-screen">
         
-        <!-- HEADER MODIFICADO: Título a la izquierda y Logo grande a la derecha -->
-        <div class="flex flex-col md:flex-row items-center justify-between w-full mb-6 px-4">
-            <div class="flex items-center gap-3">
+        <div class="flex flex-col items-center mb-6">
+            <div class="flex items-center justify-center gap-3">
                 <svg width="45" height="45" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#43b2f0]">
                     <circle cx="40" cy="50" r="30" fill="currentColor"/>
                     <circle cx="70" cy="40" r="15" fill="currentColor"/>
@@ -84,12 +83,9 @@
                     Pizarra de Aire
                 </h1>
             </div>
-            
-            <!-- FIRMA CON IMAGEN LOGOFIRMA.JPG -->
-            <div class="flex flex-col items-center md:items-end mt-4 md:mt-0 print:hidden">
-                <span class="text-[0.65rem] text-gray-400 uppercase tracking-widest font-sans font-semibold mb-1">Creada por</span>
-                <img src="logofirma.jpg" alt="Firma Creador" class="h-16 md:h-20 w-auto object-contain drop-shadow-md">
-            </div>
+            <p class="text-[10px] md:text-xs font-bold text-[#627a9e] uppercase tracking-[0.15em] mt-2 text-center">
+                
+            </p>
         </div>
 
         <div class="flex flex-col lg:flex-row w-full gap-6 justify-center items-start">
@@ -141,6 +137,7 @@
 
             <!-- CONTROLES DERECHOS (PINCEL Y PLANTILLAS) -->
             <div class="w-full lg:w-64 bg-[#181c2e] border border-[#2a304a] rounded-2xl p-5 shadow-lg flex flex-col gap-6 shrink-0 h-fit max-h-[85vh] overflow-y-auto">
+                
                 <div class="flex flex-col gap-3">
                     <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-1 text-center">Grosor de Pincel</h3>
                     <div class="grid grid-cols-3 lg:grid-cols-1 gap-2">
@@ -214,13 +211,18 @@
         </div>
     </div>
 
+    <!-- Bloque de firma elegante -->
+    <div class="fixed bottom-4 right-4 md:bottom-6 md:right-8 opacity-50 hover:opacity-100 transition-opacity duration-500 z-50 print:hidden pointer-events-none select-none">
+        <div class="flex flex-col items-end">
+            <span class="text-[0.65rem] text-gray-400 uppercase tracking-widest font-sans mb-[-4px]">Creada por</span>
+            <span class="text-2xl text-gray-200" style="font-family: 'Brush Script MT', 'Lucida Handwriting', 'Great Vibes', cursive;">Nasslo Muñoz</span>
+            <span class="text-[0.6rem] text-gray-400 font-sans tracking-widest uppercase mt-1">Ingeniero Informático</span>
+        </div>
+    </div>
+
     <script>
         const video = document.createElement("video");
         video.autoplay = true;
-        // SEGUROS PARA CÁMARA EN INTERNET (Evitan que el navegador la bloquee en GitHub Pages)
-        video.playsInline = true;
-        video.muted = true;
-
         const vCanvas = document.getElementById("videoCanvas");
         const dCanvas = document.getElementById("drawCanvas");
         const tCanvas = document.getElementById("templateCanvas");
@@ -423,13 +425,9 @@
             };
 
             rec.onerror = (e) => {
-                // Filtramos los errores inofensivos de ciclo continuo para no llenar la consola
-                if (e.error === 'no-speech' || e.error === 'aborted' || e.error === 'network') {
-                    return; 
-                }
-                console.error("Error de Voz crítico: ", e.error);
+                console.error("Voz: ", e.error);
                 if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-                    rec.onend = null; // Detener reinicio si el usuario bloqueó el micrófono
+                    rec.onend = null; 
                 }
             };
             
@@ -492,14 +490,7 @@
         }
 
         function loop() {
-            // SEGURO APLICADO: Solo dibujar si el video tiene frames disponibles (Evita pantalla negra por crash)
-            if (video.readyState >= 2) {
-                vctx.save(); 
-                vctx.scale(-1, 1); 
-                vctx.drawImage(video, -900, 0, 900, 650); 
-                vctx.restore();
-            }
-
+            vctx.save(); vctx.scale(-1, 1); vctx.drawImage(video, -900, 0, 900, 650); vctx.restore();
             const blue = detectColor("blue");
             const red = detectColor("red");
 
@@ -512,7 +503,6 @@
                 if(lastRed) { dctx.globalCompositeOperation = "destination-out"; dctx.beginPath(); dctx.moveTo(lastRed.x, lastRed.y); dctx.lineTo(red.x, red.y); dctx.lineWidth = brushSize * 5; dctx.lineCap = "round"; dctx.stroke(); }
                 lastRed = red;
             } else lastRed = null;
-            
             requestAnimationFrame(loop);
         }
         loop();
