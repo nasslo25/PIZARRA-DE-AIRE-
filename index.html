@@ -2,17 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pizarra de Aire · Despierta Mentes</title>
-    
-    <!-- PWA Meta Tags y Manifest -->
-    <meta name="theme-color" content="#0b0f19">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Pizarra Aire">
-    <link rel="apple-touch-icon" href="icono.png">
-    <link rel="manifest" href="manifest.json">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizarra de aire </title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -24,192 +15,26 @@
             background-color: #0b0f19;
             color: white;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* --- SPLASH SCREEN --- */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #0b0f19;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-        #splash-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        #splash-logo {
-            width: 160px;
-            height: auto;
-            border-radius: 20%;
-            animation: pulseLogo 2s infinite;
-            filter: drop-shadow(0 10px 20px rgba(67, 178, 240, 0.4));
-        }
-        @keyframes pulseLogo {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
-        }
-        .splash-text {
-            color: #43b2f0;
-            font-weight: 900;
-            margin-top: 24px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-size: 0.875rem;
-            animation: pulseLogo 2s infinite;
-        }
-
-        /* --- NUEVO LAYOUT RESPONSIVO 100% CENTRADO --- */
-        .app-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            max-width: 1600px; /* Aumentado para pantallas anchas */
-            margin: 0 auto;
-            padding: 1rem 2rem; /* Padding lateral */
-            box-sizing: border-box;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 2rem;
-            flex-wrap: wrap; /* Para móviles */
-            gap: 1rem;
-        }
-
-        .main-content {
-            display: flex;
-            flex-direction: row;
-            justify-content: center; /* Centra todo horizontalmente */
-            align-items: stretch; /* Estira los paneles para que tengan la misma altura */
-            gap: 2rem;
-            width: 100%;
-            flex: 1;
-        }
-
-        .side-panel {
-            width: 250px; /* Ancho fijo para paneles en PC */
-            flex-shrink: 0;
-            background-color: #181c2e;
-            border: 1px solid #2a304a;
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            max-height: calc(100vh - 160px);
-            overflow-y: auto;
-        }
-
-        .center-panel {
-            flex: 1; /* Ocupa el espacio central restante */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Alinea la cámara arriba */
-            max-width: 900px;
-            width: 100%;
         }
 
         #gameBox {
             position: relative;
             width: 100%;
-            /* Relación de aspecto 4:3 estricta */
-            aspect-ratio: 4 / 3;
-            max-height: 70vh; /* Límite de altura en PC */
-            background: #111;
+            max-width: 900px;
+            aspect-ratio: 900 / 650;
+            background: #000;
             border-radius: 1.5rem;
             overflow: hidden;
             border: 2px solid #3b72cf;
-            box-shadow: 0 0 40px rgba(59, 114, 207, 0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            box-shadow: 0 0 30px rgba(59, 114, 207, 0.2);
         }
 
-        #cameraErrorMsg {
-            position: absolute;
-            z-index: 50;
-            color: #ef4444;
-            text-align: center;
-            padding: 2rem;
-            display: none;
-            flex-direction: column;
-            gap: 1rem;
-            background: rgba(0,0,0,0.7);
-            border-radius: 1rem;
-            backdrop-filter: blur(4px);
-        }
-
-        /* --- MEDIA QUERIES PARA MÓVILES Y TABLETS --- */
-        @media (max-width: 1024px) {
-            .app-container {
-                padding: 1rem;
-            }
-            .header-container {
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-            }
-            .main-content {
-                flex-direction: column;
-                align-items: center;
-                gap: 1.5rem;
-            }
-            .center-panel {
-                order: -1; /* Cámara arriba en móviles */
-                width: 100%;
-                max-width: 100%;
-            }
-            #gameBox {
-                max-height: 55vh; /* Altura menor en móviles */
-                border-radius: 1rem;
-            }
-            .side-panel {
-                width: 100%;
-                max-height: none;
-                flex-direction: column; /* Apila secciones en móvil */
-                align-items: stretch;
-            }
-            /* Scroll horizontal para herramientas en móvil */
-            .mobile-scroll-row {
-                display: flex;
-                flex-direction: row;
-                overflow-x: auto;
-                gap: 0.5rem;
-                padding-bottom: 0.5rem;
-                width: 100%;
-            }
-            .mobile-scroll-row > button {
-                flex-shrink: 0;
-            }
-        }
-
-        /* --- ESTILOS DEL CANVAS --- */
         canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; 
-            /* EFECTO ESPEJO */
-            transform: scaleX(-1);
         }
 
         #videoCanvas { z-index: 1; }
@@ -221,256 +46,213 @@
             top: 15px;
             width: 100%;
             text-align: center;
-            font-size: clamp(18px, 4vw, 28px);
+            font-size: 28px;
             font-weight: 900;
             color: white;
             z-index: 20;
             text-shadow: 0 4px 15px rgba(0,0,0,0.9);
             text-transform: uppercase;
             letter-spacing: 2px;
-            transform: scaleX(-1); 
         }
         
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(59, 114, 207, 0.5); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(59, 114, 207, 0.8); }
 
-        /* Ocultar scrollbars personalizadas en móvil */
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-
         @media print {
             body * { visibility: hidden; }
             #gameBox, #gameBox * { visibility: visible; }
-            #gameBox { position: absolute; left: 0; top: 0; background: white !important; border: none !important; box-shadow: none !important; border-radius: 0; width: 100%; height: auto; max-height: none; aspect-ratio: auto; }
+            #gameBox { position: absolute; left: 0; top: 0; background: white !important; border: none !important; box-shadow: none !important; border-radius: 0; width: 100%; }
             #videoCanvas, #templateCanvas { display: none !important; }
-            canvas, #nameDisplay { transform: none; } 
         }
     </style>
 </head>
-<body class="selection:bg-cyan-500/30 overflow-x-hidden">
+<body class="selection:bg-cyan-500/30 overflow-x-hidden flex flex-col items-center">
 
-    <div id="splash-screen">
-        <img src="icono.png" alt="Despierta Mentes Icono" id="splash-logo" onerror="this.src='https://placehold.co/160x160/1e293b/bae6fd?text=Icono'">
-        <p class="splash-text">Preparando tu lienzo...</p>
-    </div>
-
-    <!-- Contenedor Principal -->
-    <div class="app-container">
+    <div class="relative z-10 w-full flex flex-col items-center pt-8 pb-12 px-4 sm:px-6 max-w-[1500px] mx-auto min-h-screen">
         
-        <header class="header-container">
+        <!-- HEADER MODIFICADO: Título a la izquierda y Logo grande a la derecha -->
+        <div class="flex flex-col md:flex-row items-center justify-between w-full mb-6 px-4">
             <div class="flex items-center gap-3">
-                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#43b2f0]">
+                <svg width="45" height="45" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#43b2f0]">
                     <circle cx="40" cy="50" r="30" fill="currentColor"/>
                     <circle cx="70" cy="40" r="15" fill="currentColor"/>
                     <circle cx="80" cy="60" r="10" fill="#0b0f19"/>
                 </svg>
-                <div class="text-left">
-                    <h1 class="text-3xl md:text-4xl font-black text-[#43b2f0] tracking-wider uppercase m-0 leading-tight">
-                        Pizarra de Aire
-                    </h1>
-                    <p class="text-[10px] md:text-xs font-bold text-[#627a9e] uppercase tracking-[0.15em] m-0" id="mic-status-text">
-                        Dibuja con colores y tu voz
-                    </p>
-                </div>
+                <h1 class="text-3xl md:text-5xl font-black text-[#43b2f0] tracking-wider uppercase m-0 leading-none">
+                    Pizarra de Aire
+                </h1>
             </div>
-
-            <div class="flex flex-col items-center md:items-end gap-1 print:hidden">
-                <span class="text-[0.65rem] text-slate-400 uppercase tracking-widest font-sans font-semibold">Creada por</span>
-                <!-- Logo Oficial Forzado a Ser Grande -->
-                <img src="logofirma.jpg" alt="Despierta Mentes" class="w-auto object-contain rounded drop-shadow-md" style="height: 120px; max-height: 15vh;" onerror="this.src='https://placehold.co/150x40/1e293b/bae6fd?text=Logo+Firma'">
-            </div>
-        </header>
-
-        <main class="main-content">
             
-            <!-- PANEL IZQUIERDO: COLORES -->
-            <aside class="side-panel">
-                <h3 class="text-xs font-black text-[#6a80b3] uppercase tracking-widest text-center m-0">Paleta</h3>
+            <!-- FIRMA CON IMAGEN LOGOFIRMA.JPG -->
+            <div class="flex flex-col items-center md:items-end mt-4 md:mt-0 print:hidden">
+                <span class="text-[0.65rem] text-gray-400 uppercase tracking-widest font-sans font-semibold mb-1">Creada por</span>
+                <img src="logofirma.jpg" alt="Firma Creador" class="h-16 md:h-20 w-auto object-contain drop-shadow-md">
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row w-full gap-6 justify-center items-start">
+            
+            <!-- CONTROLES IZQUIERDOS (COLORES) -->
+            <div class="w-full lg:w-64 bg-[#181c2e] border border-[#2a304a] rounded-2xl p-5 shadow-lg flex flex-col gap-3 shrink-0 h-fit max-h-[85vh] overflow-y-auto">
+                <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-2 text-center">Paleta de Colores</h3>
                 
-                <div class="grid grid-cols-3 lg:grid-cols-1 gap-2 w-full mobile-scroll-row scrollbar-hide">
-                    <button onclick="setColor('lime')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span> <span class="hidden lg:inline">Verde</span>
+                <div class="grid grid-cols-2 lg:grid-cols-1 gap-2">
+                    <button onclick="setColor('lime')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-green-500 mr-3 shadow-[0_0_8px_rgba(34,197,94,0.5)]"></span> Verde
                     </button>
-                    <button onclick="setColor('red')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.5)]"></span> <span class="hidden lg:inline">Rojo</span>
+                    <button onclick="setColor('red')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-red-600 mr-3 shadow-[0_0_8px_rgba(220,38,38,0.5)]"></span> Rojo
                     </button>
-                    <button onclick="setColor('blue')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-blue-600 shadow-[0_0_8px_rgba(37,99,235,0.5)]"></span> <span class="hidden lg:inline">Azul</span>
+                    <button onclick="setColor('blue')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-blue-600 mr-3 shadow-[0_0_8px_rgba(37,99,235,0.5)]"></span> Azul
                     </button>
-                    <button onclick="setColor('yellow')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"></span> <span class="hidden lg:inline">Amarillo</span>
+                    <button onclick="setColor('yellow')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-yellow-400 mr-3 shadow-[0_0_8px_rgba(250,204,21,0.5)]"></span> Amarillo
                     </button>
-                    <button onclick="setColor('purple')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-purple-600 shadow-[0_0_8px_rgba(147,51,234,0.5)]"></span> <span class="hidden lg:inline">Morado</span>
+                    <button onclick="setColor('purple')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-purple-600 mr-3 shadow-[0_0_8px_rgba(147,51,234,0.5)]"></span> Morado
                     </button>
-                    <button onclick="setColor('orange')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.5)]"></span> <span class="hidden lg:inline">Naranja</span>
+                    <button onclick="setColor('orange')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-orange-500 mr-3 shadow-[0_0_8px_rgba(249,115,22,0.5)]"></span> Naranjo
                     </button>
-                    <button onclick="setColor('pink')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-pink-400 shadow-[0_0_8px_rgba(244,114,182,0.5)]"></span> <span class="hidden lg:inline">Rosado</span>
+                    <button onclick="setColor('pink')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-pink-400 mr-3 shadow-[0_0_8px_rgba(244,114,182,0.5)]"></span> Rosado
                     </button>
-                    <button onclick="setColor('brown')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-[#8B4513] shadow-[0_0_8px_rgba(139,69,19,0.5)]"></span> <span class="hidden lg:inline">Café</span>
+                    <button onclick="setColor('brown')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-[#8B4513] mr-3 shadow-[0_0_8px_rgba(139,69,19,0.5)]"></span> Café
                     </button>
-                    <button onclick="setColor('black')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-2 px-3 transition text-xs font-bold flex items-center justify-center lg:justify-start gap-2">
-                        <span class="w-3 h-3 rounded-full bg-gray-900 border border-gray-600"></span> <span class="hidden lg:inline">Negro</span>
+                    <button onclick="setColor('black')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-sm font-bold flex items-center group">
+                        <span class="w-3.5 h-3.5 rounded-full bg-gray-900 border border-gray-600 mr-3"></span> Negro
                     </button>
                 </div>
-            </aside>
+            </div>
 
-            <section class="center-panel">
+            <!-- ÁREA CENTRAL (CÁMARA Y DIBUJO) -->
+            <div class="flex-1 w-full flex justify-center items-start order-first lg:order-none mb-4 lg:mb-0">
                 <div id="gameBox">
-                    <div id="cameraErrorMsg">
-                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18"></path></svg>
-                        <div>
-                            <h4 class="font-black text-lg m-0">Cámara No Disponible</h4>
-                            <p class="text-xs text-red-200 mt-1 max-w-xs">Asegúrate de dar permisos a la cámara en tu navegador o de estar en un entorno seguro (HTTPS).</p>
-                        </div>
-                    </div>
-
                     <div id="nameDisplay"></div>
                     <canvas id="videoCanvas"></canvas>
                     <canvas id="drawCanvas"></canvas>
                     <canvas id="templateCanvas"></canvas>
                 </div>
-            </section>
+            </div>
 
-            <aside class="side-panel">
-                <div class="flex flex-col gap-2 w-full">
-                    <h3 class="text-xs font-black text-[#6a80b3] uppercase tracking-widest text-center m-0">Grosor</h3>
-                    <div class="grid grid-cols-3 gap-1">
-                        <button onclick="setBrushSize(4)" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">✏️</button>
-                        <button onclick="setBrushSize(8)" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">🖌️</button>
-                        <button onclick="setBrushSize(16)" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">🖍️</button>
+            <!-- CONTROLES DERECHOS (PINCEL Y PLANTILLAS) -->
+            <div class="w-full lg:w-64 bg-[#181c2e] border border-[#2a304a] rounded-2xl p-5 shadow-lg flex flex-col gap-6 shrink-0 h-fit max-h-[85vh] overflow-y-auto">
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-1 text-center">Grosor de Pincel</h3>
+                    <div class="grid grid-cols-3 lg:grid-cols-1 gap-2">
+                        <button onclick="setBrushSize(4)" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-xs font-bold flex items-center justify-center lg:justify-start">
+                            <span>✏️</span> <span class="hidden lg:inline ml-3">Delgado</span>
+                        </button>
+                        <button onclick="setBrushSize(8)" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-xs font-bold flex items-center justify-center lg:justify-start">
+                            <span>🖌️</span> <span class="hidden lg:inline ml-3">Medio</span>
+                        </button>
+                        <button onclick="setBrushSize(16)" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2.5 px-4 transition-all duration-200 text-xs font-bold flex items-center justify-center lg:justify-start">
+                            <span>🖍️</span> <span class="hidden lg:inline ml-3">Grueso</span>
+                        </button>
                     </div>
                 </div>
 
-                <hr class="border-[#2a304a] my-1 w-full hidden lg:block">
+                <hr class="border-[#2a304a]">
 
-                <div class="flex flex-col gap-2 w-full">
-                    <h3 class="text-xs font-black text-[#43b2f0] uppercase tracking-widest text-center m-0">Figuras</h3>
-                    <div class="grid grid-cols-4 lg:grid-cols-2 gap-1 mobile-scroll-row scrollbar-hide">
-                        <button onclick="setTemplate('star')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">⭐</button>
-                        <button onclick="setTemplate('heart')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">❤️</button>
-                        <button onclick="setTemplate('house')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">🏠</button>
-                        <button onclick="setTemplate('tree')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">🌳</button>
-                        <button onclick="setTemplate('sun')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">☀️</button>
-                        <button onclick="setTemplate('flower')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">🌻</button>
-                        <button onclick="setTemplate('fish')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">🐟</button>
-                        <button onclick="setTemplate('car')" class="w-12 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-lg py-1 transition text-xs font-bold">🚗</button>
-                    </div>
-
-                    <h3 class="text-xs font-black text-[#43b2f0] uppercase tracking-widest text-center mt-2 m-0">Letras y Num</h3>
-                    <div class="grid grid-cols-5 gap-1 mobile-scroll-row scrollbar-hide">
-                        <button onclick="setTemplate('A')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-md py-1 transition text-xs font-bold text-gray-200">A</button>
-                        <button onclick="setTemplate('E')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-md py-1 transition text-xs font-bold text-gray-200">E</button>
-                        <button onclick="setTemplate('I')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-md py-1 transition text-xs font-bold text-gray-200">I</button>
-                        <button onclick="setTemplate('O')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-md py-1 transition text-xs font-bold text-gray-200">O</button>
-                        <button onclick="setTemplate('U')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] rounded-md py-1 transition text-xs font-bold text-gray-200">U</button>
+                <!-- SECCIÓN DE PLANTILLAS -->
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-[11px] font-black text-[#43b2f0] uppercase tracking-widest mb-1 text-center">Figuras</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setTemplate('star')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">⭐ Estrella</button>
+                        <button onclick="setTemplate('heart')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">❤️ Corazón</button>
+                        <button onclick="setTemplate('house')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">🏠 Casa</button>
+                        <button onclick="setTemplate('tree')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">🌳 Árbol</button>
                         
-                        <button onclick="setTemplate('1')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">1</button>
-                        <button onclick="setTemplate('2')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">2</button>
-                        <button onclick="setTemplate('3')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">3</button>
-                        <button onclick="setTemplate('4')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">4</button>
-                        <button onclick="setTemplate('5')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">5</button>
-                        <button onclick="setTemplate('6')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">6</button>
-                        <button onclick="setTemplate('7')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">7</button>
-                        <button onclick="setTemplate('8')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">8</button>
-                        <button onclick="setTemplate('9')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">9</button>
-                        <button onclick="setTemplate('10')" class="w-10 lg:w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-md py-1 transition text-xs font-bold">10</button>
+                        <button onclick="setTemplate('sun')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">☀️ Sol</button>
+                        <button onclick="setTemplate('flower')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">🌻 Flor</button>
+                        <button onclick="setTemplate('fish')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">🐟 Pez</button>
+                        <button onclick="setTemplate('car')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center">🚗 Auto</button>
                     </div>
 
-                    <button onclick="setTemplate('none')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-400 rounded-lg py-1.5 transition text-xs font-bold mt-1 w-full">❌ Quitar</button>
+                    <h3 class="text-[11px] font-black text-[#43b2f0] uppercase tracking-widest mt-1 mb-1 text-center">Vocales y Números</h3>
+                    <div class="grid grid-cols-5 gap-1">
+                        <button onclick="setTemplate('A')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center">A</button>
+                        <button onclick="setTemplate('E')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center">E</button>
+                        <button onclick="setTemplate('I')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center">I</button>
+                        <button onclick="setTemplate('O')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center">O</button>
+                        <button onclick="setTemplate('U')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-200 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center">U</button>
+                        
+                        <button onclick="setTemplate('1')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">1</button>
+                        <button onclick="setTemplate('2')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">2</button>
+                        <button onclick="setTemplate('3')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">3</button>
+                        <button onclick="setTemplate('4')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">4</button>
+                        <button onclick="setTemplate('5')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">5</button>
+                        
+                        <button onclick="setTemplate('6')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">6</button>
+                        <button onclick="setTemplate('7')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">7</button>
+                        <button onclick="setTemplate('8')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">8</button>
+                        <button onclick="setTemplate('9')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">9</button>
+                        <button onclick="setTemplate('10')" class="bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-yellow-300 rounded-lg py-1.5 transition-all duration-200 text-[11px] font-bold flex items-center justify-center mt-1">10</button>
+                    </div>
+
+                    <button onclick="setTemplate('none')" class="w-full bg-[#121524] hover:bg-[#1f253d] border border-[#232942] text-gray-400 rounded-xl py-2 px-1 transition-all duration-200 text-[10px] font-bold flex items-center justify-center mt-1">❌ Quitar Plantilla</button>
                 </div>
 
-                <div class="flex flex-row lg:flex-col gap-2 w-full mt-auto lg:mt-4">
-                    <button onclick="clearCanvas()" class="flex-1 lg:w-full bg-[#bd323c] hover:bg-[#a12831] border border-[#d14b54] text-white rounded-lg py-2 px-2 transition text-[10px] md:text-xs font-black shadow-md tracking-wider flex justify-center items-center">
-                        <span class="mr-1">🧹</span> LIMPIAR
+                <hr class="border-[#2a304a]">
+
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-1 text-center">Acciones Rápidas</h3>
+                    <button onclick="clearCanvas()" class="w-full bg-[#bd323c] hover:bg-[#a12831] border border-[#d14b54] text-white rounded-xl py-3 px-4 transition-all duration-200 shadow-md text-sm font-black flex items-center justify-center tracking-wider">
+                        <span class="mr-2 text-lg">🧹</span> LIMPIAR
                     </button>
-                    <button onclick="printDrawing()" class="flex-1 lg:w-full bg-[#2a62ba] hover:bg-[#204e96] border border-[#3f79d4] text-white rounded-lg py-2 px-2 transition text-[10px] md:text-xs font-black shadow-md tracking-wider flex justify-center items-center">
-                        <span class="mr-1">🖨️</span> IMPRIMIR
+                    <button onclick="printDrawing()" class="w-full bg-[#2a62ba] hover:bg-[#204e96] border border-[#3f79d4] text-white rounded-xl py-3 px-4 transition-all duration-200 shadow-md text-sm font-black flex items-center justify-center tracking-wider">
+                        <span class="mr-2 text-lg">🖨️</span> IMPRIMIR
                     </button>
                 </div>
-            </aside>
-        </main>
+
+            </div>
+
+        </div>
     </div>
 
     <script>
-        // Variables de estado correctas del código original
-        let currentColor = 'lime';
-        let brushSize = 4;
-        let lastExecutionTime = 0; 
-        let lastBlue = null;
-        let lastRed = null;
-        const INTERNAL_W = 1280; 
-        const INTERNAL_H = 960;
-
-        // Ocultar Splash Screen después de 3 segundos
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.classList.add('hidden');
-                setTimeout(() => splash.style.display = 'none', 500);
-            }, 3000); 
-        });
-
-        // Registro de Service Worker
-        if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-            });
-        }
-
         const video = document.createElement("video");
         video.autoplay = true;
-        
+        // SEGUROS PARA CÁMARA EN INTERNET (Evitan que el navegador la bloquee en GitHub Pages)
+        video.playsInline = true;
+        video.muted = true;
+
         const vCanvas = document.getElementById("videoCanvas");
         const dCanvas = document.getElementById("drawCanvas");
         const tCanvas = document.getElementById("templateCanvas");
         const nameDisplay = document.getElementById("nameDisplay");
+        
+        const vctx = vCanvas.getContext("2d");
+        const dctx = dCanvas.getContext("2d");
+        const tctx = tCanvas.getContext("2d");
 
-        vCanvas.width = dCanvas.width = tCanvas.width = INTERNAL_W;
-        vCanvas.height = dCanvas.height = tCanvas.height = INTERNAL_H;
+        vCanvas.width = 900; vCanvas.height = 650;
+        dCanvas.width = 900; dCanvas.height = 650;
+        tCanvas.width = 900; tCanvas.height = 650;
 
-        let vctx = vCanvas.getContext("2d", { willReadFrequently: true });
-        let dctx = dCanvas.getContext("2d");
-        let tctx = tCanvas.getContext("2d");
+        let lastBlue = null, lastRed = null, currentColor = "lime", brushSize = 8;
+        let lastExecutionTime = 0;
 
-        let cameraReady = false;
-        navigator.mediaDevices.getUserMedia({video: { facingMode: "user" }, audio: false})
-            .then(s => { 
-                video.srcObject = s; 
-                video.play(); 
-                cameraReady = true;
-                document.getElementById('cameraErrorMsg').style.display = 'none';
-            })
-            .catch(e => {
-                console.error("Error cámara:", e);
-                cameraReady = false;
-                document.getElementById('cameraErrorMsg').style.display = 'flex';
-                if(vctx) {
-                    vctx.fillStyle = "#1e293b";
-                    vctx.fillRect(0, 0, INTERNAL_W, INTERNAL_H);
-                }
-            });
+        navigator.mediaDevices.getUserMedia({video: true, audio: false})
+            .then(s => { video.srcObject = s; video.play(); })
+            .catch(e => console.error("Error cámara:", e));
 
         function setColor(color) { currentColor = color; }
         function setBrushSize(size) { brushSize = size; }
-        function clearCanvas() { dctx.clearRect(0, 0, INTERNAL_W, INTERNAL_H); }
+        function clearCanvas() { dctx.clearRect(0, 0, 900, 650); }
 
         function printDrawing(name = "") {
-            if(name) {
-                nameDisplay.innerText = "Dibujo de: " + name;
-                nameDisplay.style.transform = 'scaleX(-1)'; 
-            }
+            if(name) nameDisplay.innerText = "Dibujo de: " + name;
             window.print();
             setTimeout(() => { nameDisplay.innerText = ""; }, 2000);
         }
 
         function setTemplate(type) {
-            tctx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+            tctx.clearRect(0, 0, 900, 650);
             if (type === 'none') return;
 
             tctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
@@ -481,7 +263,7 @@
             tctx.shadowColor = "rgba(67, 178, 240, 0.8)";
             tctx.shadowBlur = 15;
 
-            const cx = INTERNAL_W / 2, cy = INTERNAL_H / 2;
+            const cx = 450, cy = 325;
 
             if (type === 'star') {
                 let rot = Math.PI / 2 * 3;
@@ -522,24 +304,33 @@
                 let x = cx - s/2;
                 let y = cy - s/2 + 60;
                 tctx.beginPath();
-                tctx.moveTo(x, y+s); tctx.lineTo(x, y+s*0.4); tctx.lineTo(x - 30, y+s*0.4); 
-                tctx.lineTo(x + s/2, y - 50); tctx.lineTo(x + s + 30, y+s*0.4); 
-                tctx.lineTo(x + s, y+s*0.4); tctx.lineTo(x + s, y+s); 
-                tctx.lineTo(x + s*0.65, y+s); tctx.lineTo(x + s*0.65, y+s*0.5); 
-                tctx.lineTo(x + s*0.35, y+s*0.5); tctx.lineTo(x + s*0.35, y+s); 
+                tctx.moveTo(x, y+s); 
+                tctx.lineTo(x, y+s*0.4); 
+                tctx.lineTo(x - 30, y+s*0.4); 
+                tctx.lineTo(x + s/2, y - 50); 
+                tctx.lineTo(x + s + 30, y+s*0.4); 
+                tctx.lineTo(x + s, y+s*0.4); 
+                tctx.lineTo(x + s, y+s); 
+                tctx.lineTo(x + s*0.65, y+s); 
+                tctx.lineTo(x + s*0.65, y+s*0.5); 
+                tctx.lineTo(x + s*0.35, y+s*0.5); 
+                tctx.lineTo(x + s*0.35, y+s); 
                 tctx.closePath(); 
                 tctx.stroke();
             } else if (type === 'tree') {
                 tctx.beginPath();
-                tctx.moveTo(cx - 40, cy + 220); tctx.lineTo(cx - 30, cy + 50);  
+                tctx.moveTo(cx - 40, cy + 220); 
+                tctx.lineTo(cx - 30, cy + 50);  
                 tctx.arc(cx - 90, cy + 10, 80, Math.PI/2, Math.PI*1.5); 
                 tctx.arc(cx - 40, cy - 80, 80, Math.PI, Math.PI*1.8); 
                 tctx.arc(cx + 40, cy - 80, 80, Math.PI*1.2, Math.PI*2); 
                 tctx.arc(cx + 90, cy + 10, 80, Math.PI*1.5, Math.PI*0.5); 
-                tctx.lineTo(cx + 30, cy + 50); tctx.lineTo(cx + 40, cy + 220); 
+                tctx.lineTo(cx + 30, cy + 50);  
+                tctx.lineTo(cx + 40, cy + 220); 
                 tctx.closePath();
                 tctx.stroke();
-            } else if (type === 'sun') {
+            } 
+            else if (type === 'sun') {
                 tctx.beginPath();
                 tctx.arc(cx, cy, 90, 0, Math.PI * 2);
                 for(let i=0; i<8; i++) {
@@ -550,7 +341,8 @@
                 tctx.stroke();
             } else if (type === 'flower') {
                 tctx.beginPath();
-                tctx.moveTo(cx, cy + 50); tctx.lineTo(cx, cy + 250);
+                tctx.moveTo(cx, cy + 50);
+                tctx.lineTo(cx, cy + 250);
                 tctx.moveTo(cx, cy + 150);
                 tctx.quadraticCurveTo(cx + 80, cy + 100, cx + 100, cy + 150);
                 tctx.quadraticCurveTo(cx + 80, cy + 200, cx, cy + 150);
@@ -561,28 +353,41 @@
                     tctx.moveTo(px, py);
                     tctx.arc(cx + Math.cos(angle)*90, cy + Math.sin(angle)*90, 45, 0, Math.PI*2);
                 }
-                tctx.moveTo(cx + 50, cy); tctx.arc(cx, cy, 50, 0, Math.PI * 2);
+                tctx.moveTo(cx + 50, cy);
+                tctx.arc(cx, cy, 50, 0, Math.PI * 2);
                 tctx.stroke();
             } else if (type === 'fish') {
                 tctx.beginPath();
                 tctx.ellipse(cx - 30, cy, 140, 90, 0, 0, Math.PI * 2);
-                tctx.moveTo(cx + 110, cy); tctx.lineTo(cx + 200, cy - 80); tctx.lineTo(cx + 200, cy + 80);
+                tctx.moveTo(cx + 110, cy);
+                tctx.lineTo(cx + 200, cy - 80);
+                tctx.lineTo(cx + 200, cy + 80);
                 tctx.closePath();
-                tctx.moveTo(cx - 100, cy - 20); tctx.arc(cx - 110, cy - 20, 10, 0, Math.PI * 2);
-                tctx.moveTo(cx - 140, cy + 20); tctx.quadraticCurveTo(cx - 110, cy + 50, cx - 80, cy + 20);
+                tctx.moveTo(cx - 100, cy - 20);
+                tctx.arc(cx - 110, cy - 20, 10, 0, Math.PI * 2);
+                tctx.moveTo(cx - 140, cy + 20);
+                tctx.quadraticCurveTo(cx - 110, cy + 50, cx - 80, cy + 20);
                 tctx.stroke();
             } else if (type === 'car') {
                 tctx.beginPath();
                 tctx.arc(cx - 100, cy + 80, 40, 0, Math.PI * 2);
-                tctx.moveTo(cx + 140, cy + 80); tctx.arc(cx + 100, cy + 80, 40, 0, Math.PI * 2);
-                tctx.moveTo(cx - 180, cy + 80); tctx.lineTo(cx - 140, cy + 80);
-                tctx.moveTo(cx - 60, cy + 80); tctx.lineTo(cx + 60, cy + 80);
-                tctx.moveTo(cx + 140, cy + 80); tctx.lineTo(cx + 200, cy + 80);
-                tctx.lineTo(cx + 200, cy - 20); tctx.lineTo(cx - 180, cy - 20);
+                tctx.moveTo(cx + 140, cy + 80);
+                tctx.arc(cx + 100, cy + 80, 40, 0, Math.PI * 2);
+                tctx.moveTo(cx - 180, cy + 80);
+                tctx.lineTo(cx - 140, cy + 80);
+                tctx.moveTo(cx - 60, cy + 80);
+                tctx.lineTo(cx + 60, cy + 80);
+                tctx.moveTo(cx + 140, cy + 80);
+                tctx.lineTo(cx + 200, cy + 80);
+                tctx.lineTo(cx + 200, cy - 20);
+                tctx.lineTo(cx - 180, cy - 20);
                 tctx.closePath();
-                tctx.moveTo(cx - 80, cy - 20); tctx.lineTo(cx - 30, cy - 100);
-                tctx.lineTo(cx + 80, cy - 100); tctx.lineTo(cx + 140, cy - 20);
-                tctx.lineTo(cx + 25, cy - 20); tctx.lineTo(cx + 25, cy - 100);
+                tctx.moveTo(cx - 80, cy - 20);
+                tctx.lineTo(cx - 30, cy - 100);
+                tctx.lineTo(cx + 80, cy - 100);
+                tctx.lineTo(cx + 140, cy - 20);
+                tctx.lineTo(cx + 25, cy - 20);
+                tctx.lineTo(cx + 25, cy - 100);
                 tctx.stroke();
             } else if (['A', 'E', 'I', 'O', 'U', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'].includes(type)) {
                 tctx.font = "900 450px Nunito, sans-serif";
@@ -594,190 +399,123 @@
         }
 
         function detectColor(target) {
-            const frame = vctx.getImageData(0, 0, INTERNAL_W, INTERNAL_H);
+            const frame = vctx.getImageData(0, 0, 900, 650);
             let sX = 0, sY = 0, count = 0;
-            
             for(let i = 0; i < frame.data.length; i += 32) {
                 const r = frame.data[i], g = frame.data[i+1], b = frame.data[i+2];
-                if(target === "blue" && b > 150 && r < 100) { 
-                    count++; 
-                    sX += (i/4)%INTERNAL_W; 
-                    sY += Math.floor((i/4)/INTERNAL_W); 
-                }
-                if(target === "red" && r > 150 && g < 80 && b < 80) { 
-                    count++; 
-                    sX += (i/4)%INTERNAL_W; 
-                    sY += Math.floor((i/4)/INTERNAL_W); 
-                }
+                if(target === "blue" && b > 150 && r < 100) { count++; sX += (i/4)%900; sY += Math.floor((i/4)/900); }
+                if(target === "red" && r > 150 && g < 80 && b < 80) { count++; sX += (i/4)%900; sY += Math.floor((i/4)/900); }
             }
             return count > 20 ? { x: sX / count, y: sY / count } : null;
         }
 
-        function loop() {
-            if (cameraReady && video.readyState === video.HAVE_ENOUGH_DATA) {
-                vctx.drawImage(video, 0, 0, INTERNAL_W, INTERNAL_H);
-                
-                const blue = detectColor("blue");
-                const red = detectColor("red");
-
-                if(blue) {
-                    if(lastBlue) { 
-                        dctx.globalCompositeOperation = "source-over"; 
-                        dctx.beginPath(); 
-                        dctx.moveTo(lastBlue.x, lastBlue.y); 
-                        dctx.lineTo(blue.x, blue.y); 
-                        dctx.strokeStyle = currentColor; 
-                        dctx.lineWidth = brushSize; 
-                        dctx.lineCap = "round"; 
-                        dctx.stroke(); 
-                    }
-                    lastBlue = blue;
-                } else lastBlue = null;
-
-                if(red) {
-                    if(lastRed) { 
-                        dctx.globalCompositeOperation = "destination-out"; 
-                        dctx.beginPath(); 
-                        dctx.moveTo(lastRed.x, lastRed.y); 
-                        dctx.lineTo(red.x, red.y); 
-                        dctx.lineWidth = brushSize * 5; 
-                        dctx.lineCap = "round"; 
-                        dctx.stroke(); 
-                    }
-                    lastRed = red;
-                } else lastRed = null;
-            }
-            requestAnimationFrame(loop);
-        }
-        loop();
-
-        // Inicialización Robusta del Micrófono
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let isRecognizing = false;
-        let micBlocked = false; 
-        let rec = null;
-
-        function initMicrophone() {
-            if (!SpeechRecognition) {
-                document.getElementById('mic-status-text').innerText = "Voz no compatible en este navegador";
-                document.getElementById('mic-status-text').style.color = "#ef4444";
-                return;
-            }
-
-            if (rec) return; // Ya está inicializado
-
-            rec = new SpeechRecognition();
-            rec.lang = "es-CL"; // Forzamos Español de Chile
+        if (SpeechRecognition) {
+            const rec = new SpeechRecognition();
+            rec.lang = "es-CL";
             rec.continuous = true;
             rec.interimResults = false;
             
-            rec.onstart = () => { 
-                isRecognizing = true; 
-                document.getElementById('mic-status-text').innerText = "🎙️ Escuchando comandos...";
-                document.getElementById('mic-status-text').style.color = "#4ade80"; // Verde
-            };
-
             rec.onend = () => {
-                isRecognizing = false;
-                if (!micBlocked) {
-                    // Intento de reconexión suave
-                    setTimeout(() => {
-                        if (!isRecognizing && !micBlocked) {
-                            try { rec.start(); } catch(e) {}
-                        }
-                    }, 1000);
-                } else {
-                    document.getElementById('mic-status-text').innerText = "🎙️ Micrófono pausado/bloqueado";
-                    document.getElementById('mic-status-text').style.color = "#facc15"; // Amarillo
-                }
+                setTimeout(() => {
+                    try { rec.start(); } catch(e) {}
+                }, 1000);
             };
 
             rec.onerror = (e) => {
+                // Filtramos los errores inofensivos de ciclo continuo para no llenar la consola
+                if (e.error === 'no-speech' || e.error === 'aborted' || e.error === 'network') {
+                    return; 
+                }
+                console.error("Error de Voz crítico: ", e.error);
                 if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-                    micBlocked = true; 
-                    document.getElementById('mic-status-text').innerText = "❌ Micrófono bloqueado";
-                    document.getElementById('mic-status-text').style.color = "#ef4444";
-                    console.warn("Permisos de micrófono denegados.");
-                } else {
-                    // Ignorar errores de red temporales para que se reinicie solo
-                    isRecognizing = false;
+                    rec.onend = null; // Detener reinicio si el usuario bloqueó el micrófono
                 }
             };
             
             rec.onresult = (e) => {
                 const now = Date.now();
                 const result = e.results[e.results.length - 1];
-                
-                // Reducimos el tiempo de espera a 1 segundo para mayor sensibilidad
-                if (!result.isFinal || (now - lastExecutionTime < 1000)) return; 
+                if (!result.isFinal || (now - lastExecutionTime < 5000)) return;
 
                 const t = result[0].transcript.toLowerCase();
-                console.log("🗣️ Escuché exactamente esto: ", t); // Revisa esto en la consola (F12)
                 
                 if (t.includes("imprimir")) {
                     lastExecutionTime = now;
                     const nombre = t.split("imprimir")[1] || "";
                     printDrawing(nombre.trim());
                 }
-                else if (t.includes("limpiar") || t.includes("borrar todo")) { lastExecutionTime = now; clearCanvas(); }
-                else if (t.includes("estrella")) { lastExecutionTime = now; setTemplate("star"); }
-                else if (t.includes("corazón") || t.includes("corazon")) { lastExecutionTime = now; setTemplate("heart"); }
-                else if (t.includes("casa")) { lastExecutionTime = now; setTemplate("house"); }
-                else if (t.includes("árbol") || t.includes("arbol")) { lastExecutionTime = now; setTemplate("tree"); }
-                else if (t.includes("sol")) { lastExecutionTime = now; setTemplate("sun"); }
-                else if (t.includes("flor")) { lastExecutionTime = now; setTemplate("flower"); }
-                else if (t.includes("pez") || t.includes("pescado")) { lastExecutionTime = now; setTemplate("fish"); }
-                else if (t.includes("auto") || t.includes("carro") || t.includes("coche")) { lastExecutionTime = now; setTemplate("car"); }
+                else if (t.includes("limpiar")) clearCanvas();
+                else if (t.includes("estrella")) setTemplate("star");
+                else if (t.includes("corazón") || t.includes("corazon")) setTemplate("heart");
+                else if (t.includes("casa")) setTemplate("house");
+                else if (t.includes("árbol") || t.includes("arbol")) setTemplate("tree");
                 
-                else if (t.includes("vocal a") || t.includes("letra a") || t === "a" || t === "á") { lastExecutionTime = now; setTemplate("A"); }
-                else if (t.includes("vocal e") || t.includes("letra e") || t === "e" || t === "é") { lastExecutionTime = now; setTemplate("E"); }
-                else if (t.includes("vocal i") || t.includes("letra i") || t === "i" || t === "í" || t === "y" || t.includes("letra y")) { lastExecutionTime = now; setTemplate("I"); }
-                else if (t.includes("vocal o") || t.includes("letra o") || t === "o" || t === "ó") { lastExecutionTime = now; setTemplate("O"); }
-                else if (t.includes("vocal u") || t.includes("letra u") || t === "u" || t === "ú") { lastExecutionTime = now; setTemplate("U"); }
-
-                else if (t.includes("diez") || t.includes("10")) { lastExecutionTime = now; setTemplate("10"); }
-                else if (t.includes("nueve") || t.includes("9")) { lastExecutionTime = now; setTemplate("9"); }
-                else if (t.includes("ocho") || t.includes("8")) { lastExecutionTime = now; setTemplate("8"); }
-                else if (t.includes("siete") || t.includes("7")) { lastExecutionTime = now; setTemplate("7"); }
-                else if (t.includes("seis") || t.includes("6")) { lastExecutionTime = now; setTemplate("6"); }
-                else if (t.includes("cinco") || t.includes("5")) { lastExecutionTime = now; setTemplate("5"); }
-                else if (t.includes("cuatro") || t.includes("4")) { lastExecutionTime = now; setTemplate("4"); }
-                else if (t.includes("tres") || t.includes("3")) { lastExecutionTime = now; setTemplate("3"); }
-                else if (t.includes("dos") || t.includes("2")) { lastExecutionTime = now; setTemplate("2"); }
-                else if (t.includes("uno") || t.includes("1")) { lastExecutionTime = now; setTemplate("1"); }
-
-                else if (t.includes("quitar")) { lastExecutionTime = now; setTemplate("none"); }
-                else if (t.includes("rojo")) { lastExecutionTime = now; setColor("red"); }
-                else if (t.includes("verde")) { lastExecutionTime = now; setColor("lime"); }
-                else if (t.includes("azul")) { lastExecutionTime = now; setColor("blue"); }
-                else if (t.includes("amarillo")) { lastExecutionTime = now; setColor("yellow"); }
-                else if (t.includes("morado")) { lastExecutionTime = now; setColor("purple"); }
-                else if (t.includes("naranjo") || t.includes("naranja")) { lastExecutionTime = now; setColor("orange"); }
-                else if (t.includes("rosado") || t.includes("rosa")) { lastExecutionTime = now; setColor("pink"); }
-                else if (t.includes("café") || t.includes("cafe") || t.includes("marrón")) { lastExecutionTime = now; setColor("brown"); }
-                else if (t.includes("negro")) { lastExecutionTime = now; setColor("black"); }
+                else if (t.includes("sol")) setTemplate("sun");
+                else if (t.includes("flor")) setTemplate("flower");
+                else if (t.includes("pez") || t.includes("pescado")) setTemplate("fish");
+                else if (t.includes("auto") || t.includes("carro") || t.includes("coche")) setTemplate("car");
                 
-                else if (t.includes("delgado") || t.includes("fino")) { lastExecutionTime = now; setBrushSize(4); }
-                else if (t.includes("medio") || t.includes("mediano")) { lastExecutionTime = now; setBrushSize(8); }
-                else if (t.includes("grueso") || t.includes("grande")) { lastExecutionTime = now; setBrushSize(16); }
+                else if (t.includes("vocal a") || t.includes("letra a") || t === "a" || t === "á") setTemplate("A");
+                else if (t.includes("vocal e") || t.includes("letra e") || t === "e" || t === "é") setTemplate("E");
+                else if (t.includes("vocal i") || t.includes("letra i") || t === "i" || t === "í" || t === "y" || t.includes("letra y")) setTemplate("I");
+                else if (t.includes("vocal o") || t.includes("letra o") || t === "o" || t === "ó") setTemplate("O");
+                else if (t.includes("vocal u") || t.includes("letra u") || t === "u" || t === "ú") setTemplate("U");
+
+                else if (t.includes("diez") || t.includes("10")) setTemplate("10");
+                else if (t.includes("nueve") || t.includes("9")) setTemplate("9");
+                else if (t.includes("ocho") || t.includes("8")) setTemplate("8");
+                else if (t.includes("siete") || t.includes("7")) setTemplate("7");
+                else if (t.includes("seis") || t.includes("6")) setTemplate("6");
+                else if (t.includes("cinco") || t.includes("5")) setTemplate("5");
+                else if (t.includes("cuatro") || t.includes("4")) setTemplate("4");
+                else if (t.includes("tres") || t.includes("3")) setTemplate("3");
+                else if (t.includes("dos") || t.includes("2")) setTemplate("2");
+                else if (t.includes("uno") || t.includes("1")) setTemplate("1");
+
+                else if (t.includes("quitar")) setTemplate("none");
+                else if (t.includes("rojo")) setColor("red");
+                else if (t.includes("verde")) setColor("lime");
+                else if (t.includes("azul")) setColor("blue");
+                else if (t.includes("amarillo")) setColor("yellow");
+                else if (t.includes("morado")) setColor("purple");
+                else if (t.includes("naranjo")) setColor("orange");
+                else if (t.includes("rosado")) setColor("pink");
+                else if (t.includes("café") || t.includes("cafe")) setColor("brown");
+                else if (t.includes("negro")) setColor("black");
+                else if (t.includes("delgado")) setBrushSize(4);
+                else if (t.includes("medio")) setBrushSize(8);
+                else if (t.includes("grueso")) setBrushSize(16);
             };
             
             try { rec.start(); } catch(e) {}
         }
 
-        // Forzar el inicio del micrófono con la primera interacción del usuario en la pantalla
-        // Esto es necesario para GitHub Pages y navegadores modernos
-        document.body.addEventListener('click', () => {
-            if (!isRecognizing && !micBlocked) {
-                initMicrophone();
+        function loop() {
+            // SEGURO APLICADO: Solo dibujar si el video tiene frames disponibles (Evita pantalla negra por crash)
+            if (video.readyState >= 2) {
+                vctx.save(); 
+                vctx.scale(-1, 1); 
+                vctx.drawImage(video, -900, 0, 900, 650); 
+                vctx.restore();
             }
-        });
 
-        // Intentar iniciar automáticamente después de 3.5 segundos (tras el splash)
-        setTimeout(() => {
-            initMicrophone();
-        }, 3500);
+            const blue = detectColor("blue");
+            const red = detectColor("red");
 
+            if(blue) {
+                if(lastBlue) { dctx.globalCompositeOperation = "source-over"; dctx.beginPath(); dctx.moveTo(lastBlue.x, lastBlue.y); dctx.lineTo(blue.x, blue.y); dctx.strokeStyle = currentColor; dctx.lineWidth = brushSize; dctx.lineCap = "round"; dctx.stroke(); }
+                lastBlue = blue;
+            } else lastBlue = null;
+
+            if(red) {
+                if(lastRed) { dctx.globalCompositeOperation = "destination-out"; dctx.beginPath(); dctx.moveTo(lastRed.x, lastRed.y); dctx.lineTo(red.x, red.y); dctx.lineWidth = brushSize * 5; dctx.lineCap = "round"; dctx.stroke(); }
+                lastRed = red;
+            } else lastRed = null;
+            
+            requestAnimationFrame(loop);
+        }
+        loop();
     </script>
 </body>
 </html>
