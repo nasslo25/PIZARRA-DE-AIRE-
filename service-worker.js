@@ -1,13 +1,14 @@
-// Nombre único de la caché para esta aplicación
-const CACHE_NAME = 'pizarra-aire-pwa-v2';
+// Aumentamos la versión de la caché para forzar al navegador a borrar la vieja y tomar los archivos nuevos
+const CACHE_NAME = 'pizarra-aire-pwa-v3';
 
-// Archivos esenciales para que funcione rápidamente
+// Archivos esenciales para que funcione offline y se pueda instalar.
+// MUY IMPORTANTE: Aquí aseguramos que dice logofirma.png
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
   './icono.png',
-  './logofirma.png' // <-- AQUÍ ESTÁ EL CAMBIO A .JPG
+  './logofirma.png'
 ];
 
 // 1. Al instalar, guardamos los archivos en caché
@@ -22,7 +23,7 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// 2. Al activar, borramos cachés viejos si actualizamos la versión
+// 2. Al activar, borramos cachés viejos si actualizamos la versión (v3)
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -41,7 +42,7 @@ self.addEventListener('activate', event => {
 
 // 3. Al hacer peticiones, buscamos en caché primero
 self.addEventListener('fetch', event => {
-  // Ignoramos librerías externas pesadas (Tailwind) para que no bloqueen
+  // Ignoramos librerías externas pesadas (Tailwind) para que no bloqueen la instalación
   if (event.request.url.includes('cdn.tailwindcss.com')) {
       return; 
   }
