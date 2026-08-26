@@ -1,9 +1,14 @@
+HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizarra de aire </title>
+    
+    <!-- AQUÍ CONECTAMOS EL MANIFEST PARA QUE SEA INSTALABLE -->
+    <link rel="manifest" href="./manifest.json">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -85,10 +90,10 @@
                 </h1>
             </div>
             
-            <!-- FIRMA CON IMAGEN LOGOFIRMA.PNG -->
+            <!-- FIRMA CON IMAGEN LOGOFIRMA.JPG -->
             <div class="flex flex-col items-center md:items-end mt-4 md:mt-0 print:hidden">
                 <span class="text-[0.65rem] text-gray-400 uppercase tracking-widest font-sans font-semibold mb-1">Creada por</span>
-                <img src="logofirma.png" alt="Firma Creador" class="h-16 md:h-20 w-auto object-contain drop-shadow-md">
+                <img src="logofirma.jpg" alt="Firma Creador" class="h-16 md:h-20 w-auto object-contain drop-shadow-md">
             </div>
         </div>
 
@@ -516,6 +521,17 @@
             requestAnimationFrame(loop);
         }
         loop();
+    </script>
+
+    <!-- AQUÍ REGISTRAMOS EL SERVICE WORKER PARA QUE LA APP SE PUEDA INSTALAR -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('Service Worker registrado correctamente.', reg))
+                    .catch(err => console.error('Error al registrar el Service Worker:', err));
+            });
+        }
     </script>
 </body>
 </html>
