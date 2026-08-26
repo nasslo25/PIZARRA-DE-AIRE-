@@ -7,7 +7,7 @@ const urlsToCache = [
   './index.html',
   './manifest.json',
   './icono.png',
-  './logofirma.png'
+  './logofirma.jpg' // <-- AQUÍ ESTÁ EL CAMBIO A .JPG
 ];
 
 // 1. Al instalar, guardamos los archivos en caché
