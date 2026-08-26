@@ -547,12 +547,15 @@
 
     <!-- REGISTRO DEL SERVICE WORKER (PWA) -->
     <script>
-        if ('serviceWorker' in navigator) {
+        // Verificamos que estamos en un servidor real (http o https) antes de instalar la PWA
+        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js')
                     .then(reg => console.log('Service Worker registrado correctamente.', reg))
-                    .catch(err => console.error('Error al registrar el Service Worker:', err));
+                    .catch(err => console.warn('Nota: PWA no instalable en este entorno de prueba.', err.message));
             });
+        } else {
+            console.log('Modo vista previa: Service Worker omitido para evitar errores.');
         }
     </script>
 </body>
