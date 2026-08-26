@@ -85,7 +85,7 @@
 
     <div class="relative z-10 w-full flex flex-col items-center pt-8 pb-12 px-4 sm:px-6 max-w-[1500px] mx-auto min-h-screen">
         
-        <!-- HEADER MODIFICADO: Título a la izquierda y Logo grande a la derecha -->
+        <!-- HEADER: Título a la izquierda y Logo firma a la derecha -->
         <div class="flex flex-col md:flex-row items-center justify-between w-full mb-6 px-4">
             <div class="flex items-center gap-3">
                 <svg width="45" height="45" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-[#43b2f0]">
@@ -98,7 +98,7 @@
                 </h1>
             </div>
             
-            <!-- FIRMA -->
+            <!-- FIRMA CON IMAGEN LOGOFIRMA.PNG -->
             <div class="flex flex-col items-center md:items-end mt-4 md:mt-0 print:hidden">
                 <span class="text-[0.65rem] text-gray-400 uppercase tracking-widest font-sans font-semibold mb-1">Creada por</span>
                 <img src="logofirma.png" alt="Firma Creador" class="h-16 md:h-20 w-auto object-contain drop-shadow-md">
@@ -107,7 +107,6 @@
 
         <div class="flex flex-col lg:flex-row w-full gap-6 justify-center items-start">
             
-            <!-- CONTROLES IZQUIERDOS (COLORES) -->
             <div class="w-full lg:w-64 bg-[#181c2e] border border-[#2a304a] rounded-2xl p-5 shadow-lg flex flex-col gap-3 shrink-0 h-fit max-h-[85vh] overflow-y-auto">
                 <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-2 text-center">Paleta de Colores</h3>
                 
@@ -142,7 +141,6 @@
                 </div>
             </div>
 
-            <!-- ÁREA CENTRAL (CÁMARA Y DIBUJO) -->
             <div class="flex-1 w-full flex justify-center items-start order-first lg:order-none mb-4 lg:mb-0">
                 <div id="gameBox">
                     <div id="nameDisplay"></div>
@@ -152,7 +150,6 @@
                 </div>
             </div>
 
-            <!-- CONTROLES DERECHOS (PINCEL Y PLANTILLAS) -->
             <div class="w-full lg:w-64 bg-[#181c2e] border border-[#2a304a] rounded-2xl p-5 shadow-lg flex flex-col gap-6 shrink-0 h-fit max-h-[85vh] overflow-y-auto">
                 <div class="flex flex-col gap-3">
                     <h3 class="text-[11px] font-black text-[#6a80b3] uppercase tracking-widest mb-1 text-center">Grosor de Pincel</h3>
@@ -227,7 +224,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE PANTALLA DE CARGA -->
     <script>
         // Ocultar la pantalla de carga después de unos segundos
         window.addEventListener('load', () => {
@@ -246,7 +242,7 @@
     <script>
         const video = document.createElement("video");
         video.autoplay = true;
-        // SEGUROS PARA CÁMARA EN INTERNET
+        // SEGUROS PARA CÁMARA EN INTERNET (Evitan que el navegador la bloquee en GitHub Pages)
         video.playsInline = true;
         video.muted = true;
 
@@ -547,15 +543,16 @@
 
     <!-- REGISTRO DEL SERVICE WORKER (PWA) -->
     <script>
-        // Verificamos que estamos en un servidor real (http o https) antes de instalar la PWA
-        if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        // Verificamos que estamos en un entorno seguro antes de instalar la PWA
+        if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(reg => console.log('Service Worker registrado correctamente.', reg))
-                    .catch(err => console.warn('Nota: PWA no instalable en este entorno de prueba.', err.message));
+                // Solo registramos si no estamos en una vista previa temporal de entorno cerrado
+                if (window.location.protocol.startsWith('http')) {
+                    navigator.serviceWorker.register('./service-worker.js')
+                        .then(reg => console.log('Service Worker registrado correctamente.', reg))
+                        .catch(err => console.warn('Nota: PWA no instalable en este entorno.', err.message));
+                }
             });
-        } else {
-            console.log('Modo vista previa: Service Worker omitido para evitar errores.');
         }
     </script>
 </body>
