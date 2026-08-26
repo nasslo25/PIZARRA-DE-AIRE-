@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizarra de aire </title>
     
-    <!-- AQUÍ CONECTAMOS EL MANIFEST PARA QUE SEA INSTALABLE -->
+    <!-- CONEXIÓN DEL MANIFEST PARA QUE SEA INSTALABLE -->
     <link rel="manifest" href="./manifest.json">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -74,6 +74,15 @@
 </head>
 <body class="selection:bg-cyan-500/30 overflow-x-hidden flex flex-col items-center">
 
+    <!-- PANTALLA DE CARGA (SPLASH SCREEN) -->
+    <div id="splashScreen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0b0f19] transition-opacity duration-1000">
+        <img src="icono.png" alt="Icono Pizarra de Aire" class="w-48 h-48 md:w-64 md:h-64 object-contain animate-bounce drop-shadow-[0_0_25px_rgba(67,178,240,0.6)]">
+        <h2 class="mt-8 text-2xl md:text-4xl font-black text-[#43b2f0] tracking-widest uppercase animate-pulse">
+            Cargando Pizarra...
+        </h2>
+    </div>
+    <!-- FIN PANTALLA DE CARGA -->
+
     <div class="relative z-10 w-full flex flex-col items-center pt-8 pb-12 px-4 sm:px-6 max-w-[1500px] mx-auto min-h-screen">
         
         <!-- HEADER MODIFICADO: Título a la izquierda y Logo grande a la derecha -->
@@ -89,7 +98,7 @@
                 </h1>
             </div>
             
-            <!-- FIRMA CON IMAGEN logofirma.png -->
+            <!-- FIRMA -->
             <div class="flex flex-col items-center md:items-end mt-4 md:mt-0 print:hidden">
                 <span class="text-[0.65rem] text-gray-400 uppercase tracking-widest font-sans font-semibold mb-1">Creada por</span>
                 <img src="logofirma.png" alt="Firma Creador" class="h-16 md:h-20 w-auto object-contain drop-shadow-md">
@@ -218,10 +227,26 @@
         </div>
     </div>
 
+    <!-- SCRIPT DE PANTALLA DE CARGA -->
+    <script>
+        // Ocultar la pantalla de carga después de unos segundos
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                if(splash) {
+                    splash.style.opacity = '0'; // Efecto de desvanecimiento
+                    setTimeout(() => {
+                        splash.remove(); // Elimina el elemento para que no interfiera
+                    }, 1000); 
+                }
+            }, 3000); // Se muestra por 3 segundos
+        });
+    </script>
+
     <script>
         const video = document.createElement("video");
         video.autoplay = true;
-        // SEGUROS PARA CÁMARA EN INTERNET (Evitan que el navegador la bloquee en GitHub Pages)
+        // SEGUROS PARA CÁMARA EN INTERNET
         video.playsInline = true;
         video.muted = true;
 
@@ -427,13 +452,12 @@
             };
 
             rec.onerror = (e) => {
-                // Filtramos los errores inofensivos de ciclo continuo para no llenar la consola
                 if (e.error === 'no-speech' || e.error === 'aborted' || e.error === 'network') {
                     return; 
                 }
                 console.error("Error de Voz crítico: ", e.error);
                 if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-                    rec.onend = null; // Detener reinicio si el usuario bloqueó el micrófono
+                    rec.onend = null; 
                 }
             };
             
@@ -496,7 +520,6 @@
         }
 
         function loop() {
-            // SEGURO APLICADO: Solo dibujar si el video tiene frames disponibles (Evita pantalla negra por crash)
             if (video.readyState >= 2) {
                 vctx.save(); 
                 vctx.scale(-1, 1); 
@@ -522,7 +545,7 @@
         loop();
     </script>
 
-    <!-- AQUÍ REGISTRAMOS EL SERVICE WORKER PARA QUE LA APP SE PUEDA INSTALAR -->
+    <!-- REGISTRO DEL SERVICE WORKER (PWA) -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
